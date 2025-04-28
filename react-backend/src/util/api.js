@@ -2,6 +2,7 @@
 import axios from "axios";
 
 export const request = (url = "", method = "GET", data = {}) => {
+  let access_token = localStorage.getItem("access_token");
   let headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -16,7 +17,10 @@ export const request = (url = "", method = "GET", data = {}) => {
     url: "http://localhost:8000/api/" + url,
     method: method,
     data: data,
-    headers: headers,
+    headers: {
+      ...headers,
+      Authorization: `Bearer ${access_token}`,
+    },
   })
     .then((res) => {
       // return response.data;
@@ -74,6 +78,7 @@ export const request = (url = "", method = "GET", data = {}) => {
           message: errors.message.message,
         };
       }
+      throw error;
     })
     .finally(() => {
       return;

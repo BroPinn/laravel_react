@@ -3,8 +3,7 @@
 // import { Select, QRCode, Input, Space } from "antd";
 function Homepage() {
   // const [text, setText] = React.useState("https://ant.design/");
-  const image_path =
-    "http://localhost:86/course/myProject/laravel-backend/public/storage/";
+  const image_path ="http://localhost:8000/storage/";
 
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");

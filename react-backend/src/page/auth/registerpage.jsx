@@ -1,50 +1,10 @@
-import { Button, Checkbox, Form, Input, Flex, message, Upload } from "antd";
-import { UserOutlined, LockOutlined, UploadOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useState } from "react";
+import { Button, Checkbox, Form, Input, Flex } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 function RegisterPage() {
-  const navigate = useNavigate();
-  const { register, loading } = useAuth();
-  const [imageFile, setImageFile] = useState(null);
-  
-  const onFinish = async (values) => {
-    try {
-      if (!imageFile) {
-        message.error("Please upload a profile image");
-        return;
-      }
-      
-      // Create form data for file upload
-      const formData = new FormData();
-      formData.append("name", values.fullname);
-      formData.append("email", values.username);
-      formData.append("password", values.password);
-      formData.append("phone", values.phone || "");
-      formData.append("address", values.address || "");
-      formData.append("image", imageFile);
-      formData.append("type", "customer"); // Default type for new registrations
-      
-      const result = await register(formData);
-      if (result) {
-        message.success("Registration successful! Please login.");
-        navigate("/login");
-      }
-    } catch (err) {
-      message.error(err.message || "Registration failed. Please try again.");
-    }
-  };
-  
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    if (e && e.fileList) {
-      setImageFile(e.file);
-      return e.fileList;
-    }
-    return e;
+  const onFinish = (values) => {
+    alert(JSON.stringify(values));
+    console.log("Received values of form: ", values);
   };
   return (
     <div>
@@ -52,7 +12,7 @@ function RegisterPage() {
         <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
           <h1 className="font-bold text-4xl mb-4">Sigu Up</h1>
           <Form
-            name="register"
+            name="login"
             size="large"
             initialValues={{
               remember: true,
@@ -64,7 +24,7 @@ function RegisterPage() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your full name!",
+                  message: "Please input your Username!",
                 },
               ]}
             >
@@ -75,36 +35,11 @@ function RegisterPage() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your email!",
-                  type: "email"
+                  message: "Please input your Username!",
                 },
               ]}
             >
-              <Input prefix={<UserOutlined />} placeholder="Email" />
-            </Form.Item>
-
-            <Form.Item
-              name="phone"
-              rules={[
-                {
-                  required: false,
-                  message: "Please input your phone number!",
-                },
-              ]}
-            >
-              <Input placeholder="Phone Number" />
-            </Form.Item>
-
-            <Form.Item
-              name="address"
-              rules={[
-                {
-                  required: false,
-                  message: "Please input your address!",
-                },
-              ]}
-            >
-              <Input.TextArea placeholder="Address" rows={2} />
+              <Input prefix={<UserOutlined />} placeholder="Username" />
             </Form.Item>
 
             <Form.Item
@@ -113,10 +48,6 @@ function RegisterPage() {
                 {
                   required: true,
                   message: "Please input your Password!",
-                },
-                {
-                  min: 6,
-                  message: "Password must be at least 6 characters!",
                 },
               ]}
             >
@@ -129,20 +60,11 @@ function RegisterPage() {
 
             <Form.Item
               name="confirm-password"
-              dependencies={['password']}
               rules={[
                 {
                   required: true,
-                  message: "Please confirm your password!",
+                  message: "Please input your Comfirm Password!",
                 },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('The two passwords do not match!'));
-                  },
-                }),
               ]}
             >
               <Input.Password
@@ -150,28 +72,6 @@ function RegisterPage() {
                 type="password"
                 placeholder="Confirm Password"
               />
-            </Form.Item>
-            
-            <Form.Item
-              name="image"
-              label="Profile Image"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-              rules={[
-                {
-                  required: true,
-                  message: "Please upload a profile image!",
-                },
-              ]}
-            >
-              <Upload
-                name="image"
-                listType="picture"
-                maxCount={1}
-                beforeUpload={() => false}
-              >
-                <Button icon={<UploadOutlined />}>Upload Profile Image</Button>
-              </Upload>
             </Form.Item>
 
             <Form.Item>
